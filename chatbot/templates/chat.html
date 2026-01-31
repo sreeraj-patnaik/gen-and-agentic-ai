@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .chat-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .user {
+            background-color: #e1f5fe;
+            color: #0277bd;
+            align-self: flex-end;
+        }
+
+        .bot {
+            background-color: #eeeeee;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 12px 18px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Django +  Chatbot</h2>
+
+        <div class="chat-box">
+            {% if input_text %}
+                <div class="message user">
+                    <b>You:</b> {{ input_text }}
+                </div>
+
+                <div class="message bot">
+                    <b>Bot:</b> {{ response }}
+                </div>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="input_text" placeholder="Type your message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -6,8 +6,13 @@ from pgvector.django import CosineDistance
 from .models import DocumentChunk
 
 
-# Load embedding model (will download first time only)
-MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+MODEL = None
+
+def get_model():
+    global MODEL
+    if MODEL is None:
+        MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+    return MODEL
 
 
 def load_pdf_text(pdf_path: str) -> str:
@@ -30,8 +35,10 @@ def ingest_pdf(pdf_path: str, source_name="syllabus.pdf"):
     full_text = load_pdf_text(pdf_path)
     chunks = split_text(full_text)
 
+    model = get_model()
+
     for chunk in chunks:
-        emb = MODEL.encode(chunk).tolist()
+        emb = model.encode(chunk).tolist()
         DocumentChunk.objects.create(
             text=chunk,
             embedding=emb,
@@ -42,7 +49,8 @@ def ingest_pdf(pdf_path: str, source_name="syllabus.pdf"):
 
 
 def search_similar(question: str, top_k=5):
-    q_emb = MODEL.encode(question).tolist()
+    model = get_model()
+    q_emb = model.encode(question).tolist()
 
     return (
         DocumentChunk.objects

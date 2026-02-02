@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>RAG Chatbot</title>
+  <style>
+    body { font-family: Arial; max-width: 900px; margin: 30px auto; }
+    .box { border: 1px solid #ddd; padding: 15px; border-radius: 10px; }
+    textarea { width: 100%; height: 80px; padding: 10px; font-size: 16px; }
+    button { padding: 10px 18px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+    .answer { margin-top: 15px; white-space: pre-wrap; }
+    .loading { color: gray; }
+  </style>
+</head>
+<body>
+
+  <h1>Syllabus Chatbot (Mistral & RAG)</h1>
+
+  <div class="box">
+    <textarea id="question" placeholder="Ask something from the syllabus..."></textarea>
+    <button onclick="askBot()">Ask</button>
+
+    <p id="status" class="loading"></p>
+    <div id="answer" class="answer"></div>
+  </div>
+
+  <script>
+    async function askBot() {
+      const q = document.getElementById("question").value.trim();
+      const status = document.getElementById("status");
+      const ans = document.getElementById("answer");
+
+      if (!q) {
+        alert("Type a question first!");
+        return;
+      }
+
+      status.innerText = "Thinking...";
+      ans.innerText = "";
+
+      try {
+        const res = await fetch("/api/chat/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          status.innerText = "Error ❌";
+          ans.innerText = JSON.stringify(data, null, 2);
+          return;
+        }
+
+        status.innerText = "Done ✅";
+        ans.innerText = data.answer || "(No answer returned)";
+      } catch (err) {
+        status.innerText = "Error ❌";
+        ans.innerText = err.toString();
+      }
+    }
+  </script>
+
+</body>
+</html>

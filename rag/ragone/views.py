@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.conf import settings
 import os
+from django.shortcuts import render
 
 from .rag_engine import ingest_pdf, search_similar
 from .models import DocumentChunk
@@ -61,3 +62,7 @@ def chat_view(request):
         "answer": answer,
         "chunks_used": len(results),
     })
+
+
+def chat_page(request):
+    return render(request, "ragone/chat.html")
